@@ -32,17 +32,18 @@ body {
 }
 
 .game-variable button {
-  width: 100px;
   background-repeat: no-repeat;
   background-size: cover;
   color: rgb(28, 95, 145);
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  padding: .25em .25em;
+  padding: 5px 0px;
+  min-width: 75px;
   border: none;
   background-color: transparent;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .game-variable {
