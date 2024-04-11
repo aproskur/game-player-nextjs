@@ -1,78 +1,3 @@
-:root {
-  --max-width: 1100px;
-  --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
-
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-
-  --primary-glow: conic-gradient(
-    from 180deg at 50% 50%,
-    #16abff33 0deg,
-    #0885ff33 55deg,
-    #54d6ff33 120deg,
-    #0071ff33 160deg,
-    transparent 360deg
-  );
-  --secondary-glow: radial-gradient(
-    rgba(255, 255, 255, 1),
-    rgba(255, 255, 255, 0)
-  );
-
-  --tile-start-rgb: 239, 245, 249;
-  --tile-end-rgb: 228, 232, 233;
-  --tile-border: conic-gradient(
-    #00000080,
-    #00000040,
-    #00000030,
-    #00000020,
-    #00000010,
-    #00000010,
-    #00000080
-  );
-
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-
-    --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
-    --secondary-glow: linear-gradient(
-      to bottom right,
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0.3)
-    );
-
-    --tile-start-rgb: 2, 13, 46;
-    --tile-end-rgb: 2, 5, 19;
-    --tile-border: conic-gradient(
-      #ffffff80,
-      #ffffff40,
-      #ffffff30,
-      #ffffff20,
-      #ffffff10,
-      #ffffff10,
-      #ffffff80
-    );
-
-    --callout-rgb: 20, 20, 20;
-    --callout-border-rgb: 108, 108, 108;
-    --card-rgb: 100, 100, 100;
-    --card-border-rgb: 200, 200, 200;
-  }
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -81,27 +6,98 @@
 
 html,
 body {
-  max-width: 100vw;
   overflow-x: hidden;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.default-main-screen {
+  background: no-repeat;
+  background-size: cover;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+
+.game-variables-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.game-variable {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+}
+
+.game-variable button {
+  width: 100px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: rgb(28, 95, 145);
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: .25em .25em;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.game-variable {
+  color: #fff;
+  font-weight: bold;
+  text-transform: lowercase;
+
+}
+
+.description-div {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 95%;
+  background-color: rgba(34, 46, 80);
+  padding: 10px;
+  z-index: 1;
+  font-weight: normal;
+  font-size: 0.75rem;
+  border-radius: 15px;
+}
+
+.cards-container {
+  background-color: rgba(34, 46, 80, 0.5);
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  height: calc(100% - 2em);
+  width: 85%;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+.game-card {
+  width: calc(33.33% - 20px);
+  padding: 1em;
+  background-color: rgba(162, 217, 247, 0.5);
+  font-weight: bold;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2em;
+}
+
+.button-next {
+  padding: 1em 2em;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  text-transform: lowercase;
+  background-color: rgba(34, 46, 80);
 }
