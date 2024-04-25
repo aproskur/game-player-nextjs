@@ -7,14 +7,17 @@ import GameButton from '../components/gameComponents/GameButton'
 
 
 function renderComponent(componentData) {
-    const { component: ComponentType, elements, cssClass, ...props } = componentData;
+    const { component: ComponentType, elements, id, cssClass, ...props } = componentData;
+    console.log("Key that element gets", id);
 
     switch (ComponentType) {
         case 'screenComponent':
             return (
                 <GameScreen
+                    id={id}
                     cssClass={cssClass}
                     backgroundImage={props.backgroundImage}
+                    key={id}
                 >
                     {renderElements(elements)}
                 </GameScreen>
@@ -22,7 +25,9 @@ function renderComponent(componentData) {
         case 'areaComponent':
             return (
                 <GameArea
+                    id={id}
                     cssClass={cssClass}
+                    key={id}
                 >
                     {renderElements(elements)}
                 </GameArea>
@@ -30,34 +35,40 @@ function renderComponent(componentData) {
         case 'gameVariableComponent':
             return (
                 <GameVariable
+                    id={id}
                     cssClass={cssClass}
+                    cssInline={props.cssInline}
                     backgroundImage={props.backgroundImage}
                     caption={props.caption}
                     description={props.description}
                     value={props.value}
+                    actions={props.actions}
+                    key={id}
                 >
                 </GameVariable>
             );
         case 'cardComponent':
             return (
                 <GameCard
+                    id={id}
                     cssClass={cssClass}
                     text={props.text}
-
+                    key={id}
+                    actions={props.actions}
+                    backgroundImage={props.backgroundImage}
                 >
                     {renderElements(elements)}
-
                 </GameCard>
             );
         case 'buttonComponent':
             return (
                 <GameButton
+                    id={id}
                     cssClass={cssClass}
                     caption={props.caption}
-
+                    key={id}
                 >
                     {renderElements(elements)}
-
                 </GameButton>
             );
         default:
@@ -65,20 +76,25 @@ function renderComponent(componentData) {
     }
 }
 
+
 function renderElements(elements) {
     if (!elements || Object.keys(elements).length === 0) {
         return null;
     }
 
-    return Object.values(elements).map((element, index) => (
-        <React.Fragment key={index}>
-            {renderComponent(element)}
-        </React.Fragment>
-    ));
+    return Object.entries(elements).map(([key, value]) => {
+        console.log("Value", value);
+
+        const newValue = { ...value, id: key };
+        console.log("New value", newValue);
+        console
+        console.log("new Value with id", newValue);
+        return (
+            <React.Fragment key={key}>
+                {renderComponent(newValue)}
+            </React.Fragment>
+        );
+    });
 }
 
-
-
-
 export default renderComponent;
-
