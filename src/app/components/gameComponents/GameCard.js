@@ -4,7 +4,10 @@ import { manageActions, actionHandlers } from "../../utils/actions";
 import { GameScreenContext } from "../../components/GameScreenRenderer";
 
 
-const GameCard = ({ cssClass, text, children, id, actions, ...props }) => {
+const GameCard = ({ children, id, actions, ...props }) => {
+
+
+    console.log("PROPS FroM CARD", props)
 
     const { updateAppState } = useContext(GameScreenContext);
 
@@ -20,10 +23,10 @@ const GameCard = ({ cssClass, text, children, id, actions, ...props }) => {
 
 
     return (
-        <div className={`default-game-card ${cssClass}`}
+        <div className={`default-game-card ${props.cssClass}`}
             style={{ backgroundImage: `url(${props.backgroundImage})` }}
             onClick={handleClick}>
-            {text}
+            {props.text}
             {children}
         </div>
     );

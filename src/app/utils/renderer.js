@@ -52,8 +52,8 @@ function renderComponent(componentData) {
                 <GameCard
                     id={id}
                     cssClass={cssClass}
-                    text={props.text}
                     key={id}
+                    text={props.text}
                     actions={props.actions}
                     backgroundImage={props.backgroundImage}
                 >
@@ -83,12 +83,8 @@ function renderElements(elements) {
     }
 
     return Object.entries(elements).map(([key, value]) => {
-        console.log("Value", value);
 
         const newValue = { ...value, id: key };
-        console.log("New value", newValue);
-        console
-        console.log("new Value with id", newValue);
         return (
             <React.Fragment key={key}>
                 {renderComponent(newValue)}

@@ -297,20 +297,19 @@ const GameScreenRenderer = ({ children }) => {
 
 
 
-    // Definetate specific to GameScreenRenderer
+    //probably rename this state
     const [appState, setAppState] = useState(initialState);
 
-    // You can define any functions to update the state here
 
-    // Create a function to update appState
+
     const updateAppState = (newState) => {
         setAppState(newState);
     };
-
+    //change 
     const renderedComponent = renderComponent(appState);
 
     return (
-        // Provide the appState and update function to children through context
+
         <GameScreenContext.Provider value={{ appState, updateAppState }}>
             <div>
                 {renderedComponent}
@@ -322,6 +321,5 @@ const GameScreenRenderer = ({ children }) => {
 
 export default GameScreenRenderer;
 
-// You can also create a custom hook to easily consume the context
 export const useGameScreenState = () => useContext(GameScreenContext);
 
