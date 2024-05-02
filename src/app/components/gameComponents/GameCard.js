@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { manageActions, actionHandlers } from "../../utils/actions";
 import { GameScreenContext } from "../../components/GameScreenRenderer";
 
@@ -7,28 +7,40 @@ import { GameScreenContext } from "../../components/GameScreenRenderer";
 const GameCard = ({ children, id, actions, ...props }) => {
 
 
-    console.log("PROPS FroM CARD", props)
+    const { updateAppState, appState } = useContext(GameScreenContext);
 
-    const { updateAppState } = useContext(GameScreenContext);
+    //FOR ANIMATIONS!!!
+    const [isFlipped, setIsFlipped] = useState(false);
 
 
-    console.log("actions from card", actions);
+    //Redefine handleClick to setIt in useEffect, useEffect will contrall that appState is upto bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbdate
+    //Not sure if I need this
+    const [handleClick, setHandleClick] = useState(() => () => {
+        console.log("Initial handleClick, appState should not be used here");
+    });
 
-    const handleClick = () => {
-        console.log("handleClick called int the card", id);
-        console.log("actions.onClick passed to handle click", actions.onClick);
-        console.log("exstenese of actionsHandler", actionHandlers)
-        manageActions(actions.onClick, id, actionHandlers, updateAppState);
-    };
+
+
+    useEffect(() => {
+        const newHandleClick = () => {
+            console.log("CARD handleClick.Passing to actions manager", appState)
+            manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
+            setIsFlipped(!isFlipped);
+        };
+        setHandleClick(() => newHandleClick);
+    }, [appState, isFlipped]);
+
+
 
 
     return (
-        <div className={`default-game-card ${props.cssClass}`}
+        <div className={`default-game-card ${props.cssClass} ${isFlipped ? 'flipped' : ''}`}
             style={{ backgroundImage: `url(${props.backgroundImage})` }}
             onClick={handleClick}>
             {props.text}
             {children}
         </div>
+
     );
 }
 

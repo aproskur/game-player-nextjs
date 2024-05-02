@@ -8,7 +8,6 @@ import GameButton from '../components/gameComponents/GameButton'
 
 function renderComponent(componentData) {
     const { component: ComponentType, elements, id, cssClass, ...props } = componentData;
-    console.log("Key that element gets", id);
 
     switch (ComponentType) {
         case 'screenComponent':

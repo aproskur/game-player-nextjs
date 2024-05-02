@@ -1,4 +1,3 @@
-//TODO access json via entry point properly
 function findEntryPoint(jsonData) {
     //find "application" in json
     const application = jsonData['application'];

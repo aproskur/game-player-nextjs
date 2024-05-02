@@ -3,7 +3,6 @@ import { createContext, useContext, useState } from 'react';
 import renderComponent from '../utils/renderer';
 import { findEntryPoint } from '../utils/renderUtils';
 
-// Create a new context for GameScreenRenderer
 export const GameScreenContext = createContext();
 
 const GameScreenRenderer = ({ children }) => {

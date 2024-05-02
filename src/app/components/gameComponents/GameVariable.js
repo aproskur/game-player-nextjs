@@ -1,26 +1,24 @@
-'use client'
-import React, { useState } from "react";
-import { manageActions, actionTypes, actionHandlers } from "../../utils/actions";
+import React, { useState, useEffect, useMemo } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { manageActions, actionHandlers } from "../../utils/actions";
 
 const GameVariable = ({ id, cssClass, cssInline, caption, value, description, actions, backgroundImage }) => {
     const [showDescription, setShowDescription] = useState(false);
-    const [color, setColor] = useState();
-    const [buttonColor, setButtonColor] = useState(); //
-    const handleButtonColor = (color) => {
-        setButtonColor(color)
-    }
+    const controls = useAnimation();
 
-    /*
-    const updatedActionHandlers = {
-        ...actionHandlers,
-        changeColor: (props) => {
-            handleButtonColor(props.color)
-        }
-    }
-    */
 
+    console.log("VALUE", value);
+    useEffect(() => {
+
+        console.log("Animating with value: ", value);
+
+        //shaking when value changes
+        controls.start({
+            x: [0, -5, 5, -5, 5, 0],
+            transition: { type: 'spring', stiffness: 500, damping: 10 }
+        });
+    }, [value, controls]);
     const handleClick = () => {
-        console.log('actions onClick from GameVariabel', actions.onClick);
         manageActions(actions.onClick, id, actionHandlers);
     };
 
@@ -33,16 +31,28 @@ const GameVariable = ({ id, cssClass, cssInline, caption, value, description, ac
         setShowDescription(false);
     };
 
+    const computedBackgroundImage = useMemo(() => {
+        return `url(${backgroundImage})`;
+    }, [backgroundImage]);
+
     return (
         <div className={`default-game-variable ${cssClass}`}>
-            <button
+            <motion.button
                 onClick={handleClick}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                style={{ backgroundImage: `url(${backgroundImage})`, color: buttonColor, ...cssInline }}
+                style={{ backgroundImage: computedBackgroundImage, ...cssInline }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
             >
-                <span>{value}</span>
-            </button>
+                <motion.span
+                    animate={controls}
+                    initial={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    {value}
+                </motion.span>
+            </motion.button>
             <div>
                 <span>{caption}</span>
             </div>
