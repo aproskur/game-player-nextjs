@@ -9,7 +9,7 @@ function findEntryPoint(jsonData) {
     }
 
 
-    //first child of application is supposed to be entry point??? (discuss)
+    // first child of application is supposed to be entry point??? (discuss)
     const childKeys = Object.keys(application.elements);
     if (childKeys.length === 0) {
         console.error('Application element does not contain any child elements.');

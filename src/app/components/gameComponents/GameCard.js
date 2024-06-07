@@ -1,47 +1,41 @@
-'use client'
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, memo, useCallback } from "react";
 import { manageActions, actionHandlers } from "../../utils/actions";
 import { GameScreenContext } from "../../components/GameScreenRenderer";
 
-
 const GameCard = ({ children, id, actions, ...props }) => {
-
-
     const { updateAppState, appState } = useContext(GameScreenContext);
 
-    //FOR ANIMATIONS!!!
     const [isFlipped, setIsFlipped] = useState(false);
 
+    const handleClick = useCallback(() => {
+        console.log("CARD handleClick. Passing to actions manager", appState);
+        manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
+        setIsFlipped(!isFlipped);
+    }, [actions, id, appState, updateAppState]);
 
-    //Redefine handleClick to setIt in useEffect, useEffect will contrall that appState is upto bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbdate
-    //Not sure if I need this
-    const [handleClick, setHandleClick] = useState(() => () => {
-        console.log("Initial handleClick, appState should not be used here");
-    });
+    console.log(`GameCard rendered with props:`, { id, ...props });
 
-
-
-    useEffect(() => {
-        const newHandleClick = () => {
-            console.log("CARD handleClick.Passing to actions manager", appState)
-            manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
-            setIsFlipped(!isFlipped);
-        };
-        setHandleClick(() => newHandleClick);
-    }, [appState, isFlipped]);
-
-
-
+    const backgroundImageStyle = props.backgroundImage ? { backgroundImage: `url(${props.backgroundImage})` } : {};
 
     return (
-        <div className={`default-game-card ${props.cssClass} ${isFlipped ? 'flipped' : ''}`}
-            style={{ backgroundImage: `url(${props.backgroundImage})` }}
-            onClick={handleClick}>
+        <div
+            className={`default-game-card ${props.cssClass} ${isFlipped ? 'flipped' : ''}`}
+            style={backgroundImageStyle}
+            onClick={handleClick}
+        >
             {props.text}
             {children}
         </div>
-
     );
-}
+};
 
-export default GameCard
+export default memo(GameCard, (prevProps, nextProps) => {
+    return (
+        prevProps.id === nextProps.id &&
+        prevProps.actions === nextProps.actions &&
+        prevProps.cssClass === nextProps.cssClass &&
+        prevProps.backgroundImage === nextProps.backgroundImage &&
+        prevProps.text === nextProps.text &&
+        prevProps.children === nextProps.children
+    );
+});

@@ -89,6 +89,7 @@ const applyUpdates = (currentState, updates) => {
 
 
 
+/* OLD ONE (replicates the updates!!!)
 
 function applyDeepUpdates(state, updates) {
     const findAndUpdate = (current, updates) => {
@@ -96,37 +97,122 @@ function applyDeepUpdates(state, updates) {
             return;
         }
 
-        //apply updates to existing keys
+        console.log('Current state:', current);
+        console.log('Updates to apply:', updates);
+
+        // Apply updates to existing keys
         Object.keys(updates).forEach(key => {
             if (current.hasOwnProperty(key)) {
                 if (typeof updates[key] === 'object' && updates[key] !== null && !Array.isArray(updates[key])) {
                     if (typeof current[key] === 'object' && current[key] !== null) {
+                        console.log(`Recursively updating key: ${key}`);
                         findAndUpdate(current[key], updates[key]);
                     } else {
+                        console.log(`Updating key: ${key} with value:`, updates[key]);
                         current[key] = updates[key];
                     }
                 } else {
+                    console.log(`Updating key: ${key} with value:`, updates[key]);
                     current[key] = updates[key];
                 }
-            } else if (!current.hasOwnProperty(key)) {
-                //If the key does not exist in current, add it
+            } else {
+                // If the key does not exist in current, add it
+                console.log(`Adding new key: ${key} with value:`, updates[key]);
                 current[key] = updates[key];
             }
         });
 
-        //recursively update nested objects even if not in updates
+        // Recursively update nested objects even if not in updates
         Object.keys(current).forEach(key => {
             if (typeof current[key] === 'object' && current[key] !== null && !updates.hasOwnProperty(key)) {
+                console.log(`Recursively checking nested key: ${key}`);
                 findAndUpdate(current[key], updates);
             }
         });
     };
 
+    console.log('Initial state:', state);
+    console.log('Initial updates:', updates);
+
     let newState = JSON.parse(JSON.stringify(state));
     findAndUpdate(newState, updates);
+
+    console.log('Updated state:', newState);
+
     return newState;
 }
 
+*/
+
+function applyDeepUpdates(state, updates) {
+    const findAndUpdate = (current, updates) => {
+        if (!current || typeof current !== 'object') {
+            return;
+        }
+
+        console.log('Current state:', JSON.stringify(current, null, 2));
+        console.log('Updates to apply:', JSON.stringify(updates, null, 2));
+
+        Object.keys(updates).forEach(key => {
+            if (current.hasOwnProperty(key)) {
+                if (typeof updates[key] === 'object' && updates[key] !== null && !Array.isArray(updates[key])) {
+                    if (typeof current[key] === 'object' && current[key] !== null) {
+                        console.log(`Recursively updating key: ${key}`);
+                        findAndUpdate(current[key], updates[key]);
+                    } else {
+                        console.log(`Updating key: ${key} with value:`, updates[key]);
+                        current[key] = updates[key];
+                    }
+                } else {
+                    console.log(`Updating key: ${key} with value:`, updates[key]);
+                    current[key] = updates[key];
+                }
+            } else {
+                console.log(`Adding new key: ${key} with value:`, updates[key]);
+                current[key] = updates[key];
+            }
+        });
+    };
+
+    console.log('Initial state:', JSON.stringify(state, null, 2));
+    console.log('Initial updates:', JSON.stringify(updates, null, 2));
+
+    let newState = JSON.parse(JSON.stringify(state));
+
+    const traverseAndFind = (currentState, updateKey) => {
+        if (!currentState || typeof currentState !== 'object') {
+            return null;
+        }
+
+        if (currentState.hasOwnProperty(updateKey)) {
+            return currentState;
+        }
+
+        for (const key in currentState) {
+            if (currentState.hasOwnProperty(key)) {
+                const result = traverseAndFind(currentState[key], updateKey);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+
+        return null;
+    };
+
+    Object.keys(updates).forEach(updateKey => {
+        const targetObject = traverseAndFind(newState, updateKey);
+        if (targetObject) {
+            console.log(`Found target object for key: ${updateKey}`);
+            findAndUpdate(targetObject, { [updateKey]: updates[updateKey] });
+        } else {
+            console.warn(`Target object for key: ${updateKey} not found.`);
+        }
+    });
+
+    console.log('Updated state:', JSON.stringify(newState, null, 2));
+    return newState;
+}
 
 
 
@@ -179,7 +265,7 @@ export const actionHandlers = {
             console.log("APPstate is undefined!!!!")
             stateToUpdate = {};
         }
-        console.log("stateTuUpdate BEFORE UPDATES", stateToUpdate);
+        console.log("stateToUpdate BEFORE UPDATES", stateToUpdate);
         console.log("Current appState before applying updates:", JSON.parse(JSON.stringify(appState)));
         const newState = applyDeepUpdates(stateToUpdate, serverResponse.updates);
         console.log("appState after applying updates:", JSON.stringify(newState));
@@ -197,5 +283,4 @@ export const manageActions = (actionData, id, actionHandlers, updateAppState, ap
         actionHandler(actionData.props || id, updateAppState, appState);
     }
 };
-
 

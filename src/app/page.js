@@ -1,11 +1,11 @@
+import React from 'react';
 import styles from "./page.module.css";
-import GameScreenRenderer from "./components/GameScreenRenderer"
+import GameScreenRenderer from "./components/GameScreenRenderer";
 
 export default function Home() {
-
+  console.log('Home component rendered');
 
   return (
-
     <main className={styles.main}>
       <GameScreenRenderer />
       <div>This is the child component</div>

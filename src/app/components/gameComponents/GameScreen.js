@@ -1,7 +1,8 @@
-'use client'
-import React from 'react';
+'use client';
+import React, { memo } from 'react';
 
 const GameScreen = ({ cssClass, backgroundImage, children }) => {
+  console.log('GameScreen rendered');
   return (
     <div className={`default-main-screen ${cssClass}`} style={{ backgroundImage: `url(${backgroundImage})` }}>
       {children}
@@ -9,4 +10,4 @@ const GameScreen = ({ cssClass, backgroundImage, children }) => {
   );
 };
 
-export default GameScreen;
+export default memo(GameScreen);

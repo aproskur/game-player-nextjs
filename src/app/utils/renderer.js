@@ -1,13 +1,18 @@
 import React from 'react';
 import GameScreen from '../components/gameComponents/GameScreen';
-import GameArea from '../components/gameComponents/GameArea'
-import GameVariable from '../components/gameComponents/GameVariable'
-import GameCard from '../components/gameComponents/GameCard'
-import GameButton from '../components/gameComponents/GameButton'
-
+import GameArea from '../components/gameComponents/GameArea';
+import GameVariable from '../components/gameComponents/GameVariable';
+import GameCard from '../components/gameComponents/GameCard';
+import GameButton from '../components/gameComponents/GameButton';
 
 function renderComponent(componentData) {
+    if (!componentData) {
+        return null;
+    }
+
     const { component: ComponentType, elements, id, cssClass, ...props } = componentData;
+
+    console.log(`Rendering component: ${ComponentType} with ID: ${id}`, componentData);
 
     switch (ComponentType) {
         case 'screenComponent':
@@ -43,8 +48,7 @@ function renderComponent(componentData) {
                     value={props.value}
                     actions={props.actions}
                     key={id}
-                >
-                </GameVariable>
+                />
             );
         case 'cardComponent':
             return (
@@ -55,9 +59,7 @@ function renderComponent(componentData) {
                     text={props.text}
                     actions={props.actions}
                     backgroundImage={props.backgroundImage}
-                >
-                    {renderElements(elements)}
-                </GameCard>
+                />
             );
         case 'buttonComponent':
             return (
@@ -66,29 +68,32 @@ function renderComponent(componentData) {
                     cssClass={cssClass}
                     caption={props.caption}
                     key={id}
-                >
-                    {renderElements(elements)}
-                </GameButton>
+                />
             );
         default:
             return null;
     }
 }
 
-
 function renderElements(elements) {
+    console.log("render elements func START");
+    console.log('Input elements:', elements);
+
     if (!elements || Object.keys(elements).length === 0) {
         return null;
     }
 
-    return Object.entries(elements).map(([key, value]) => {
+    const entries = Object.entries(elements);
+    console.log('Entries:', entries);
+
+    return entries.map(([key, value]) => {
+        console.log('Processing entry:', { key, value });
 
         const newValue = { ...value, id: key };
-        return (
-            <React.Fragment key={key}>
-                {renderComponent(newValue)}
-            </React.Fragment>
-        );
+        console.log('New value with id:', newValue);
+        console.log("render elements func END");
+
+        return renderComponent(newValue);
     });
 }
 

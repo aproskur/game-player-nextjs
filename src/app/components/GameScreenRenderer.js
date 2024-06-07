@@ -1,12 +1,11 @@
 'use client'
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import renderComponent from '../utils/renderer';
 import { findEntryPoint } from '../utils/renderUtils';
 
 export const GameScreenContext = createContext();
 
 const GameScreenRenderer = ({ children }) => {
-
 
 
     const jsonDataApp = {
@@ -291,24 +290,30 @@ const GameScreenRenderer = ({ children }) => {
 
 
 
+
+
+
     const entryPointKey = findEntryPoint(jsonDataApp);
-    const initialState = jsonDataApp.application.elements[entryPointKey];
+    console.log('Entry Point Key:', entryPointKey);
 
+    const initialState = { [entryPointKey]: jsonDataApp.application.elements[entryPointKey] };
+    console.log("INITIAL STATE", initialState);
 
-
-    //probably rename this state
     const [appState, setAppState] = useState(initialState);
 
-
-
     const updateAppState = (newState) => {
+
+        //entry point
         setAppState(newState);
     };
-    //change 
-    const renderedComponent = renderComponent(appState);
+
+    useEffect(() => {
+        setAppState(initialState);
+    }, [entryPointKey]);
+
+    const renderedComponent = renderComponent(appState[entryPointKey]);
 
     return (
-
         <GameScreenContext.Provider value={{ appState, updateAppState }}>
             <div>
                 {renderedComponent}
@@ -321,4 +326,3 @@ const GameScreenRenderer = ({ children }) => {
 export default GameScreenRenderer;
 
 export const useGameScreenState = () => useContext(GameScreenContext);
-
