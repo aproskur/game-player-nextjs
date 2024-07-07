@@ -6,11 +6,9 @@ import { findEntryPoint } from '../utils/renderUtils';
 export const GameScreenContext = createContext();
 
 const GameScreenRenderer = ({ children }) => {
-    true
     const [appState, setAppState] = useState(null);
-    const [loading, setLoading] = useState();
+    const [loading, setLoading] = useState(true); // Ensure loading state is initially true
     const [error, setError] = useState(null);
-
 
     //SEND START AND token. POST
     useEffect(() => {
@@ -50,6 +48,27 @@ const GameScreenRenderer = ({ children }) => {
 
                 const entryPointKey = findEntryPoint(jsonData);
                 setAppState({ [entryPointKey]: jsonData.application.elements[entryPointKey] });
+
+                // Inject CSS dynamically
+                const cssFile = jsonData.application.cssFile; // Accessing cssFile from top level of application
+                console.log("CSS File URL:", cssFile);
+                if (cssFile) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = cssFile;
+
+                    link.onload = () => {
+                        console.log('CSS file loaded successfully');
+                    };
+
+                    link.onerror = (err) => {
+                        console.error('Error loading CSS file:', err);
+                    };
+
+                    console.log('Appending link element:', link);
+                    document.head.appendChild(link);
+                    console.log('Link element appended');
+                }
             } catch (error) {
                 if (error.name === 'AbortError') {
                     console.error('Fetch request timed out');
@@ -65,10 +84,6 @@ const GameScreenRenderer = ({ children }) => {
         fetchData();
     }, []);
 
-
-
-
-
     const updateAppState = (newState) => {
         setAppState(newState);
     };
@@ -80,6 +95,7 @@ const GameScreenRenderer = ({ children }) => {
     if (error) {
         return <div>{error}</div>;
     }
+
 
     const entryPointKey = appState ? Object.keys(appState)[0] : null;
     const renderedComponent = appState && entryPointKey ? renderComponent(appState[entryPointKey]) : null;
