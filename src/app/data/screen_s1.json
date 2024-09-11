@@ -261,16 +261,30 @@
                             "B2": {
                                 "class": "button",
                                 "component": "buttonComponent",
-                                "cssClass": "button-next",
-                                "caption": "Далее",
+                                "backgroundImage": "./images/gurnal-hodov.png",
+                                "cssClass": "button-helper",
+                                "caption": "журнал ходов",
                                 "actions": {
                                     "onClick": {
-                                        "proc": "onClick",
+                                        "proc": "showHistory",
                                         "id": "B2"
                                     }
                                 }
+                            },
+                            "B3": {
+                                "class": "button",
+                                "component": "buttonComponent",
+                                "cssClass": "button-helper",
+                                "backgroundImage": "./images/podskazka.png",
+                                "caption": "подсказка",
+                                "actions": {}
                             }
                         }
+                    },
+                    "A7": {
+                        "class": "styling-area",
+                        "component": "areaComponent",
+                        "cssClass": "additional-background"
                     }
                 }
             }

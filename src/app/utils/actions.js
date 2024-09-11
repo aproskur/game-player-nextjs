@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import { GameScreenContext } from '../components/GameScreenRenderer';
 import { findEntryPoint } from './renderUtils';
+import journal from '../data/screen_j.json';
 
 export const actionTypes = {
     changeColor: "changeColor",
     showDescription: "showDescription",
-    requestServer: "requestServer"
+    requestServer: "requestServer",
+    showHistroy: "showHistory",
 };
 
 
@@ -89,11 +91,25 @@ export const actionHandlers = {
         console.log(`Changing color: ${props.color}`)
     },
     showDescription: (props) => {
+        console.log("DESCRIPTION CLICKED")
         console.log(`Showing description: ${props.description}`);
+    },
+    showHistory: (props, updateAppState) => {
+        console.log("ЖУРНАЛ ХОДОВ clicked");
+        console.log(props.actions)
+
+        //HARDCODED instead of real server response
+        const history = journal;
+        const entryPointKey = findEntryPoint(history);
+        console.log("HISTORY entry", entryPointKey);
+        const newAppState = { [entryPointKey]: history.application.elements[entryPointKey] };
+        updateAppState(newAppState);
     },
     requestServer: async (props, updateAppState, appState) => {
         console.log(`Component requests server`);
         console.log("APPSTATE passed to request server", appState);
+
+
 
         try {
             const bodyData = {

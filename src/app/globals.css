@@ -13,7 +13,9 @@ body {
   background: no-repeat;
   background-size: cover;
   min-height: 100vh;
-  height: 100%;
+  display: grid;
+  grid-template-columns: 10% 80% 10%;
+  grid-template-rows: 15% 1fr auto;
 }
 
 
@@ -21,7 +23,9 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 1em;
-
+  z-index: 2;
+  grid-row: 1;
+  grid-column: 1 / 3;
 }
 
 .game-variable {
@@ -66,7 +70,7 @@ body {
 }
 
 .cards-container {
-  background-color: rgba(34, 46, 80, 0.5);
+  /* background-color: rgba(34, 46, 80, 0.5); */
   padding: 1em;
   display: flex;
   justify-content: center;
@@ -74,7 +78,9 @@ body {
   gap: 10px;
   flex-wrap: wrap;
   margin: 0 auto;
-
+  grid-row: 2;
+  grid-column: 2;
+  z-index: 1;
 }
 
 .game-card {
@@ -88,8 +94,11 @@ body {
 
 .button-container {
   display: flex;
-  justify-content: flex-end;
   padding: 2em;
+  gap: 1em;
+  grid-row: 3;
+  grid-column: 2;
+  z-index: 1;
 }
 
 .button-next {
@@ -110,4 +119,58 @@ body {
 
 .flipped {
   transform: rotateY(180deg);
+}
+
+.button-helper {
+  color: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: .25em .75em;
+  font-weight: bold;
+  /* background-color: rgba(34, 46, 80, 0.5); */
+  outline: none;
+}
+
+.additional-background {
+  background-color: rgba(34, 46, 80, 0.5);
+  grid-column: 2;
+  grid-row: 1 / 4;
+  z-index: 0;
+}
+
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: rgba(34, 46, 80, 0.8);
+}
+
+.journal-variables-container {
+  display: flex;
+  gap: 1em;
+  text-transform: lowercase;
+  font-weight: bold;
+
+}
+
+.journal-variables-container>* {
+  flex-grow: 1;
+}
+
+.journal-cards-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.journal-cards-container>* {
+  flex-grow: 1;
+}
+
+.heading-h1 {
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.25rem;
+  text-align: center;
+  padding: 2rem 0;
+
+
 }

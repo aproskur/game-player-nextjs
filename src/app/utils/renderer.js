@@ -4,18 +4,20 @@ import GameArea from '../components/gameComponents/GameArea';
 import GameVariable from '../components/gameComponents/GameVariable';
 import GameCard from '../components/gameComponents/GameCard';
 import GameButton from '../components/gameComponents/GameButton';
+import JournalVariable from '../components/gameComponents/JournalVariable';
 
 function renderComponent(componentData) {
     if (!componentData) {
         return null;
     }
 
-    const { component: ComponentType, elements, id, cssClass, ...props } = componentData;
+    const { component: ComponentType, elements, id, cssClass, children, ...props } = componentData;
 
     console.log(`Rendering component: ${ComponentType} with ID: ${id}`, componentData);
 
     switch (ComponentType) {
         case 'screenComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
             return (
                 <GameScreen
                     id={id}
@@ -27,6 +29,7 @@ function renderComponent(componentData) {
                 </GameScreen>
             );
         case 'areaComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
             return (
                 <GameArea
                     id={id}
@@ -37,6 +40,7 @@ function renderComponent(componentData) {
                 </GameArea>
             );
         case 'gameVariableComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
             return (
                 <GameVariable
                     id={id}
@@ -50,7 +54,22 @@ function renderComponent(componentData) {
                     key={id}
                 />
             );
+        case 'journalVariableComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
+            return (
+                <JournalVariable
+                    id={id}
+                    cssClass={cssClass}
+                    cssInline={props.cssInline}
+                    caption={props.caption}
+                    value={props.value}
+                    previousValue={props.previousValue}
+                    actions={props.actions}
+                    key={id}
+                />
+            );
         case 'cardComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
             return (
                 <GameCard
                     id={id}
@@ -62,16 +81,24 @@ function renderComponent(componentData) {
                 />
             );
         case 'buttonComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
             return (
                 <GameButton
                     id={id}
                     cssClass={cssClass}
                     caption={props.caption}
                     key={id}
+                    backgroundImage={props.backgroundImage}
+                    actions={props.actions}
                 />
             );
         default:
-            return null;
+            console.log(`Rendering GameScreen with ID: ${id}`);
+            return (
+                <div id={id} className={cssClass} key={id}>
+                    {elements ? renderElements(elements) : children || props.text || null}
+                </div>
+            );
     }
 }
 

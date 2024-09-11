@@ -1,8 +1,6 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
 import renderComponent from '../utils/renderer';
-import { findEntryPoint } from '../utils/renderUtils';
-import screen from '../data/screen_s1.json'; // Import local JSON data
 
 export const GameScreenContext = createContext();
 
@@ -11,83 +9,38 @@ const GameScreenRenderer = ({ children, localDevelopment = false }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // DEBUG finding cause of rerenders
     useEffect(() => {
-        const fetchData = async () => {
-            if (localDevelopment) {
-                console.log("I am developing locally, I don't get data from SERVER");
+        console.log('AppState changed:', appState);
+    }, [appState]);
 
-                // Directly set the appState from local JSON data
-                const entryPointKey = findEntryPoint(screen);
-                setAppState({ [entryPointKey]: screen.application.elements[entryPointKey] });
 
-                // CSS
-                // for local dvelopment css is taken from global.css file that is directly imported into page.js
 
-                setLoading(false);
-            } else {
-                try {
-                    const token = 'hiiamhardcodedtoken';
-                    const bodyData = {
-                        action: 'StartGame',
-                        token: token
-                    };
-
-                    console.log('Making fetch call with body:', bodyData);
-
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-                    const response = await fetch('http://188.120.246.243:3000/submit', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(bodyData),
-                        signal: controller.signal
-                    });
-
-                    clearTimeout(timeoutId);
-
-                    console.log('Fetch call completed');
-
-                    if (!response.ok) {
-                        console.error('Response not OK:', response.status, response.statusText);
-                        throw new Error(`Failed to fetch data: ${response.statusText}`);
-                    }
-
-                    const jsonData = await response.json();
-                    console.log("JSONDATA", jsonData);
-
-                    const entryPointKey = findEntryPoint(jsonData);
-                    setAppState({ [entryPointKey]: jsonData.application.elements[entryPointKey] });
-
-                    // Inject CSS dynamically
-                    const cssFile = jsonData.application.cssFile;
-                    if (cssFile) {
-                        const link = document.createElement('link');
-                        link.rel = 'stylesheet';
-                        link.href = cssFile;
-
-                        link.onload = () => console.log('CSS file loaded successfully');
-                        link.onerror = (err) => console.error('Error loading CSS file:', err);
-
-                        document.head.appendChild(link);
-                    }
-                } catch (error) {
-                    if (error.name === 'AbortError') {
-                        console.error('Fetch request timed out');
-                    } else {
-                        console.error('Error in fetchData:', error.message);
-                    }
-                    setError('Failed to load data');
-                } finally {
-                    setLoading(false);
+    // TODO Find cause of multiple rerenders!!!
+    useEffect(() => {
+        console.log("Starting to load data");
+        const loadData = async () => {
+            try {
+                setLoading(true);  // Triggering rerender
+                let appState;
+                if (localDevelopment) {
+                    const { loadLocalData } = await import('../utils/localDataLoader');
+                    appState = loadLocalData();
+                } else {
+                    const { fetchServerData } = await import('../utils/serverDataLoader');
+                    appState = await fetchServerData();
                 }
+                setAppState(appState);  // Triggering rerender
+            } catch (error) {
+                setError('Failed to load data');  // Triggering rerender
+            } finally {
+                setLoading(false);  // Triggering re-render
             }
         };
 
-        fetchData();
+        loadData();
     }, [localDevelopment]);
+
 
     const updateAppState = (newState) => {
         setAppState(newState);
