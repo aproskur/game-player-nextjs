@@ -303,7 +303,12 @@
                                 "cssClass": "button-helper-arrow",
                                 "backgroundImage": "./images/arrow-right.png",
                                 "caption": "",
-                                "actions": {}
+                                 "actions": {
+                                    "onClick": {
+                                        "proc": "showScreenLeft",
+                                        "id": "B4"
+                                    }
+                                }
                             }
                         }
                     },

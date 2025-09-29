@@ -1,4 +1,5 @@
 import screen from '../data/screen_s1.json';
+import screen2 from '../data/screen_leftsidebar.json'
 import { findEntryPoint } from './renderUtils';
 
 export const loadLocalData = () => {

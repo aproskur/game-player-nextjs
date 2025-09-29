@@ -3,6 +3,8 @@ import { GameScreenContext } from '../components/GameScreenRenderer';
 import { findEntryPoint } from './renderUtils';
 import journal from '../data/screen_j.json';
 import screenWithCard from '../data/screen_hint.json';
+import screen2 from '../data/screen_leftsidebar.json';
+import screen_s1 from '../data/screen_s1.json';
 
 
 /*for ACTION HANDLERS */
@@ -11,7 +13,9 @@ export const actionTypes = {
     showDescription: "showDescription",
     requestServer: "requestServer",
     showHistroy: "showHistory",
-    showHint: "showHint"
+    showHint: "showHint",
+    showScreenLeft: "showScreenWithLeftSideBar",
+    showTopBar: "showTopBar"
 };
 
 
@@ -93,6 +97,20 @@ function applyDeepUpdates(state, updates) {
 export const actionHandlers = {
     changeColor: (props) => {
         console.log(`Changing color: ${props.color}`)
+    },
+    showScreenLeft: (props, updateAppState) => {
+        const screen = screen2;
+        const entryPointKey = findEntryPoint(screen2);
+        const newAppState = { [entryPointKey]: screen2.application.elements[entryPointKey] };
+        updateAppState(newAppState);
+
+    },
+       showTopBar: (props, updateAppState) => {
+        const screen = screen_s1;
+        const entryPointKey = findEntryPoint(screen);
+        const newAppState = { [entryPointKey]: screen.application.elements[entryPointKey] };
+        updateAppState(newAppState);
+
     },
         showHint: (props, updateAppState) => {
         console.log(`Showing hint: HI`)

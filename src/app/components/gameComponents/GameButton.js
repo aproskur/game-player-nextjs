@@ -1,26 +1,67 @@
-import React, { useContext, useState, memo, useCallback } from "react";
-import { manageActions, actionHandlers } from "../../utils/actions";
-import { GameScreenContext } from "../../components/GameScreenRenderer";
+'use client';
+import React, { useContext, useCallback, useMemo, memo } from 'react';
+import { manageActions, actionHandlers } from '../../utils/actions';
+import { GameScreenContext } from '../../components/GameScreenRenderer';
 
+// avoid url(undefined)
+const safeBg = (p) =>
+  p && typeof p === 'string'
+    ? (p.startsWith('url(') ? p : `url(${p})`)
+    : undefined;
 
+const GameButton = ({
+  id,
+  cssClass,
+  caption,
+  backgroundImage, // plain path like "/images/foo.png" or "url(...)"
+  actions = {},
+  style,            // new schema: css
+  cssInline,        // old schema: cssInline
+  children,
+  ...rest
+}) => {
+  const { updateAppState, appState } = useContext(GameScreenContext);
+  const clickable = Boolean(actions.onClick);
 
-const GameButton = ({ cssClass, id, caption, backgroundImage, children, actions, ...props }) => {
-    const { updateAppState, appState } = useContext(GameScreenContext);
+  const handleClick = useCallback(() => {
+    if (!clickable) return;
+    console.log('BUTTON handleClick. Passing to actions manager', appState);
+    manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
+  }, [clickable, actions, id, appState, updateAppState]);
 
+  const mergedStyle = useMemo(() => {
+    const s = { ...(cssInline || {}), ...(style || {}) };
+    const bg = safeBg(backgroundImage);
+    if (bg && !s.background && !s.backgroundImage) {
+      s.backgroundImage = bg;
+      s.backgroundSize ||= 'cover';
+      s.backgroundRepeat ||= 'no-repeat';
+      s.backgroundPosition ||= 'center';
+    }
+    return s;
+  }, [cssInline, style, backgroundImage]);
 
-    // this just sends data to the upper level. (the type of proc, id etc)
-    const handleClick = useCallback(() => {
-        console.log("BUTTON handleClick. Passing to actions manager", appState);
-        manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
-    }, [actions, id, appState, updateAppState]);
+  return (
+    <button
+      type="button"
+      className={`default-game-button ${cssClass || ''}`}
+      style={mergedStyle}
+      onClick={clickable ? handleClick : undefined}
+      aria-disabled={!clickable || undefined}
+      {...rest}
+    >
+      {caption ?? children}
+    </button>
+  );
+};
 
-    return (
-        <button className={`default-game-button ${cssClass}`}
-            style={{ backgroundImage: `url(${backgroundImage})` }}
-            onClick={handleClick}>
-            {caption}
-        </button>
-    );
-}
-
-export default GameButton
+export default memo(GameButton, (a, b) =>
+  a.id === b.id &&
+  a.caption === b.caption &&
+  a.cssClass === b.cssClass &&
+  a.backgroundImage === b.backgroundImage &&
+  a.actions === b.actions && 
+  a.style === b.style &&
+  a.cssInline === b.cssInline &&
+  a.children === b.children
+);

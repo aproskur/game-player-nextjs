@@ -23,26 +23,23 @@ function renderComponent(componentData) {
                 <GameScreen
                     id={id}
                     cssClass={cssClass}
-                    cssInline={props.cssInline}
                     backgroundImage={props.backgroundImage}
                     key={id}
                 >
                     {renderElements(elements)}
                 </GameScreen>
             );
-      case 'areaComponent':
-  return (
-    <GameArea
-      id={id}
-      cssClass={cssClass}
-      style={props.css}          // new schema
-      cssInline={props.cssInline} // old schema
-      backgroundImage={props.backgroundImage}
-      key={id}
-    >
-      {renderElements(elements)}
-    </GameArea>
-  );
+        case 'areaComponent':
+            console.log(`Rendering GameScreen with ID: ${id}`);
+            return (
+                <GameArea
+                    id={id}
+                    cssClass={cssClass}
+                    key={id}
+                >
+                    {renderElements(elements)}
+                </GameArea>
+            );
         case 'gameVariableComponent':
             console.log(`Rendering GameScreen with ID: ${id}`);
             return (
@@ -81,9 +78,7 @@ function renderComponent(componentData) {
                     key={id}
                     text={props.text}
                     actions={props.actions}
-                    backgroundImage={props.backgroundImage}  
-                    style={props.css}                        // new schema
-                    cssInline={props.cssInline}              // old schema
+                    backgroundImage={props.backgroundImage}
                 />
             );
         case 'buttonComponent':
@@ -92,8 +87,6 @@ function renderComponent(componentData) {
                 <GameButton
                     id={id}
                     cssClass={cssClass}
-                    style={props.css}            // NEW
-                    cssInline={props.cssInline}  // OLD
                     caption={props.caption}
                     key={id}
                     backgroundImage={props.backgroundImage}
@@ -101,21 +94,17 @@ function renderComponent(componentData) {
                 />
             );
             case 'helperComponent':
-  return (
-    <HelperComponent
-      id={id}
-      cssClass={cssClass}
-      text={props.text ?? props.caption}
-      caption={props.caption}
-      src={props.src}
-      backgroundImage={props.backgroundImage}
-      cssInline={props.cssInline}  // old schema
-      style={props.css}            // new schema
-      alt={props.alt ?? props.caption ?? props.text ?? ''}
-      key={id}
-    />
-  );
-
+            console.log(`Rendering helperComonent with ID: ${id}`);
+            return (
+                 <HelperComponent
+          id={id}
+          cssClass={cssClass}
+          text={props.text ?? props.caption}
+          src={props.src || props.backgroundImage}   // supports either prop
+          alt={props.alt ?? props.caption ?? props.text ?? ''}
+          key={id}
+        />
+            );
         default:
             console.log(`Rendering GameScreen with ID: ${id}`);
             return (

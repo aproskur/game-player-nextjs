@@ -253,10 +253,7 @@
                                 "actions": {}
                             }
                         }
-                    },
-        
-                    
-                      
+                    },                
                     "A7": {
                         "class": "styling-area",
                         "component": "areaComponent",
