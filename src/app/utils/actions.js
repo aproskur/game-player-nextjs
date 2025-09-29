@@ -2,12 +2,16 @@ import { useContext } from 'react';
 import { GameScreenContext } from '../components/GameScreenRenderer';
 import { findEntryPoint } from './renderUtils';
 import journal from '../data/screen_j.json';
+import screenWithCard from '../data/screen_hint.json';
 
+
+/*for ACTION HANDLERS */
 export const actionTypes = {
     changeColor: "changeColor",
     showDescription: "showDescription",
     requestServer: "requestServer",
     showHistroy: "showHistory",
+    showHint: "showHint"
 };
 
 
@@ -89,6 +93,13 @@ function applyDeepUpdates(state, updates) {
 export const actionHandlers = {
     changeColor: (props) => {
         console.log(`Changing color: ${props.color}`)
+    },
+        showHint: (props, updateAppState) => {
+        console.log(`Showing hint: HI`)
+        const hint = screenWithCard;
+        const entryPointKey = findEntryPoint(hint);
+        const newAppState = { [entryPointKey]: hint.application.elements[entryPointKey] };
+        updateAppState(newAppState);
     },
     showDescription: (props) => {
         console.log("DESCRIPTION CLICKED")

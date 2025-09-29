@@ -5,6 +5,7 @@ import GameVariable from '../components/gameComponents/GameVariable';
 import GameCard from '../components/gameComponents/GameCard';
 import GameButton from '../components/gameComponents/GameButton';
 import JournalVariable from '../components/gameComponents/JournalVariable';
+import HelperComponent from '../components/gameComponents/HelperComponent';
 
 function renderComponent(componentData) {
     if (!componentData) {
@@ -91,6 +92,18 @@ function renderComponent(componentData) {
                     backgroundImage={props.backgroundImage}
                     actions={props.actions}
                 />
+            );
+            case 'helperComponent':
+            console.log(`Rendering helperComonent with ID: ${id}`);
+            return (
+                 <HelperComponent
+          id={id}
+          cssClass={cssClass}
+          text={props.text ?? props.caption}
+          src={props.src || props.backgroundImage}   // supports either prop
+          alt={props.alt ?? props.caption ?? props.text ?? ''}
+          key={id}
+        />
             );
         default:
             console.log(`Rendering GameScreen with ID: ${id}`);

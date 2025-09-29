@@ -1,10 +1,10 @@
 {
     "application": {
-        "class": "application",
+        "class": "hint",
         "component": "here?",
         "cssFile": "to load main css. suggestion: rename field as cssFile instead of css (suggestions for other css - cssClass, cssInline)",
         "elements": {
-            "S1": {
+            "HINT": {
                 "class": "screen",
                 "component": "screenComponent",
                 "backgroundImage": "./images/arctic-background.png",
@@ -154,84 +154,31 @@
                         "cssClass": "cards-container",
                         "component": "areaComponent",
                         "elements": {
-                            "C1": {
-                                "class": "card",
-                                "component": "cardComponent",
-                                "cssClass": "game-card",
+                            "someid": {
+                                "class": "justAnAreaFromMockup",
+                                "component": "helperComponent",
+                                "cssClass": "hint-area",
                                 "state": "st1",
-                                "text": "Есть идея! Создать клуб изучения айсберга! Совместно с другими любопытными проводить наблюдения снаружи и внутри айсберга, обсуждать закономерности и прогнозы.",
+                                "text": "",
                                 "actions": {
                                     "onClick": {
-                                        "proc": "requestServer",
-                                        "id": "C1"
+                                     
                                     }
                                 }
                             },
-                            "C2": {
-                                "class": "card",
-                                "component": "cardComponent",
-                                "cssClass": "game-card",
-                                "state": "st3",
-                                "text": "Рассказать как можно большему количеству пингвинов. Начать с близких друзей, затем – друзьям друзей и далее… Вероятно, о проблеме узнают все и дело пойдет!",
+                            "Txt123": {
+                                "class": "justAnAreaFromMockup",
+                                "component": "helperComponent",
+                                "cssClass": "hint-text",
+                                "state": "st1",
+                                "text": "Антарктика - это огромный мир из воды, льда и снега, настолько огромный, что никто из его обитателей, кроме, пожалуй, китов, не представляет его размеров. Кроме гигантского материка",
                                 "actions": {
                                     "onClick": {
-                                        "proc": "requestServer",
-                                        "id": "C2"
-                                    }
-                                }
-                            },
-                            "C3": {
-                                "class": "card",
-                                "component": "cardComponent",
-                                "cssClass": "game-card",
-                                "state": "st5",
-                                "text": "Поговорить с Аленой. Алена входит в Совет, ориентирована на достижения, всегда добивается результата. Быстро схватывает новые идеи. Быстро и остывает, если не видит скорой и явной отдачи.",
-                                "actions": {
-                                    "onClick": {
-                                        "proc": "requestServer",
-                                        "id": "C3"
-                                    }
-                                }
-                            },
-                            "C4": {
-                                "class": "card",
-                                "component": "cardComponent",
-                                "cssClass": "game-card",
-                                "state": "st7",
-                                "text": "Можно зайти к Георгию. Он входит в Совет, очень умен и авторитетен, недаром его зовут Профессор. Он любит изучать проблемы, любит искать решения. Возможно, он видел Федора в Департаменте погоды...",
-                                "actions": {
-                                    "onClick": {
-                                        "proc": "onClick",
-                                        "id": "C4"
-                                    }
-                                }
-                            },
-                            "C5": {
-                                "class": "card",
-                                "component": "cardComponent",
-                                "cssClass": "game-card",
-                                "state": "st9",
-                                "text": "Обратиться сразу к Вожаку всех пингвинов – Леониду. Он, конечно, очень занят всякими важными делами, поэтому нужно заранее записаться на прием, но если он поддержит!...",
-                                "actions": {
-                                    "onClick": {
-                                        "proc": "onClick",
-                                        "id": "C5"
-                                    }
-                                }
-                            },
-                            "C6": {
-                                "class": "card",
-                                "component": "cardComponent",
-                                "cssClass": "game-card",
-                                "state": "st11",
-                                "text": "Встретиться с Василием. Он общительный и всегда готов обсудить что угодно. Еще Василий входит в Совет. Любит все свести в шутку и частенько опаздывает.",
-                                "actions": {
-                                    "onClick": {
-                                        "proc": "onClick",
-                                        "id": "C6"
+                                     
                                     }
                                 }
                             }
+
                         },
                         "A3": {
                             "class": "area",
