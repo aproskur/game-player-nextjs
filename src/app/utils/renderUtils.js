@@ -1,21 +1,46 @@
+/**
+ * Extracts the entry component key from the schema returned by the data loaders.
+ * The current contract assumes an `application` root node whose first child acts as
+ * the entry point rendered by the game screen.
+ *
+ * @param {Record<string, any>} jsonData - Parsed schema describing the full UI tree.
+ * @returns {string | null} Key of the entry component, or null when missing.
+ */
+
 function findEntryPoint(jsonData) {
-    //find "application" in json
-    const application = jsonData['application'];
-    console.log("find entry point function: application")
-    console.log(application);
-    if (!application || !application.elements) {
+    const application = jsonData?.application;
+    if (!application) {
+        console.error('Application node missing from schema.');
+        return null;
+    }
+
+    const elements = application.elements;
+    if (!elements || typeof elements !== 'object') {
         console.error('Application element not found or does not contain child elements.');
         return null;
     }
 
+    const explicitEntry = typeof application.entryPoint === 'string' && application.entryPoint.trim().length > 0
+        ? application.entryPoint.trim()
+        : typeof jsonData.entryPoint === 'string' && jsonData.entryPoint.trim().length > 0
+            ? jsonData.entryPoint.trim()
+            : null;
 
-    // first child of application is supposed to be entry point??? (discuss)
-    const childKeys = Object.keys(application.elements);
+    if (explicitEntry) {
+        if (!Object.prototype.hasOwnProperty.call(elements, explicitEntry)) {
+            console.error(`Entry point "${explicitEntry}" not found among application elements.`);
+            return null;
+        }
+        return explicitEntry;
+    }
+
+    const childKeys = Object.keys(elements);
     if (childKeys.length === 0) {
         console.error('Application element does not contain any child elements.');
         return null;
     }
 
+    console.warn('Entry point not specified in schema; falling back to the first child element.');
     return childKeys[0];
 }
 

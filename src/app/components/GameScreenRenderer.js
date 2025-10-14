@@ -2,26 +2,37 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import renderComponent from '../utils/renderer';
 
+/**
+ * Provides the current game screen state and updater to the component tree.
+ */
 export const GameScreenContext = createContext();
 
+/**
+ * Hydrates the game screen by loading state data, rendering the entry component,
+ * and exposing a context for downstream components to read and update the state.
+ * @param {object} props
+ * @param {React.ReactNode} props.children - Optional children rendered alongside the game screen.
+ * @param {boolean} [props.localDevelopment=false] - Switches data loading between local fixtures and the server.
+ * @returns {JSX.Element}
+ */
 const GameScreenRenderer = ({ children, localDevelopment = false }) => {
-    const [appState, setAppState] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [{ appState, loading, error }, setState] = useState({
+        appState: null,
+        loading: true,
+        error: null,
+    });
 
-    // DEBUG finding cause of rerenders
-    useEffect(() => {
-        console.log('AppState changed:', appState);
-    }, [appState]);
-
-
-
-    // TODO Find cause of multiple rerenders!!!
     useEffect(() => {
         console.log("Starting to load data");
+        let cancelled = false;
         const loadData = async () => {
             try {
-                setLoading(true);  // Triggering rerender
+                setState((prev) => {
+                    if (cancelled) {
+                        return prev;
+                    }
+                    return { ...prev, loading: true, error: null };
+                });
                 let appState;
                 if (localDevelopment) {
                     const { loadLocalData } = await import('../utils/localDataLoader');
@@ -30,20 +41,30 @@ const GameScreenRenderer = ({ children, localDevelopment = false }) => {
                     const { fetchServerData } = await import('../utils/serverDataLoader');
                     appState = await fetchServerData();
                 }
-                setAppState(appState);  // Triggering rerender
+                if (!cancelled) {
+                    setState({ appState, loading: false, error: null });
+                }
             } catch (error) {
-                setError('Failed to load data');  // Triggering rerender
+                if (!cancelled) {
+                    setState({ appState: null, loading: false, error: 'Failed to load data' });
+                }
             } finally {
-                setLoading(false);  // Triggering re-render
             }
         };
 
         loadData();
+        return () => {
+            cancelled = true;
+        };
     }, [localDevelopment]);
 
 
+    /**
+     * Replaces the current app state with the provided value.
+     * @param {unknown} newState - Fully updated application state tree.
+     */
     const updateAppState = (newState) => {
-        setAppState(newState);
+        setState((prev) => ({ ...prev, appState: newState }));
     };
 
     if (loading) {
@@ -69,4 +90,8 @@ const GameScreenRenderer = ({ children, localDevelopment = false }) => {
 
 export default GameScreenRenderer;
 
+/**
+ * Convenience hook for consumers that need the game screen context.
+ * @returns {{ appState: any, updateAppState: (newState: unknown) => void }}
+ */
 export const useGameScreenState = () => useContext(GameScreenContext);

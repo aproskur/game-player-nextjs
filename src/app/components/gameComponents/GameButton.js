@@ -1,7 +1,7 @@
 'use client';
 import React, { useContext, useCallback, useMemo, memo } from 'react';
 import { manageActions, actionHandlers } from '../../utils/actions';
-import { GameScreenContext } from '../../components/GameScreenRenderer';
+import { GameScreenContext } from '../GameScreenRenderer';
 
 // avoid url(undefined)
 const safeBg = (p) =>

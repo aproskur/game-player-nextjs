@@ -1,18 +1,17 @@
-import { useContext } from 'react';
-import { GameScreenContext } from '../components/GameScreenRenderer';
 import { findEntryPoint } from './renderUtils';
 import journal from '../data/screen_j.json';
 import screenWithCard from '../data/screen_hint.json';
 import screen2 from '../data/screen_leftsidebar.json';
 import screen_s1 from '../data/screen_s1.json';
 
+// Local fixtures mirror backend payloads so actions can swap screens offline during dev.
 
-/*for ACTION HANDLERS */
+// Catalog of action identifiers shared between schema payloads and client handlers.
 export const actionTypes = {
     changeColor: "changeColor",
     showDescription: "showDescription",
     requestServer: "requestServer",
-    showHistroy: "showHistory",
+    showHistory: "showHistory",
     showHint: "showHint",
     showScreenLeft: "showScreenWithLeftSideBar",
     showTopBar: "showTopBar"
@@ -20,6 +19,7 @@ export const actionTypes = {
 
 
 function applyDeepUpdates(state, updates) {
+    // Recursively merge server-sent patches into a cloned app state so renderers see immutable updates.
     const findAndUpdate = (current, updates) => {
         if (!current || typeof current !== 'object') {
             return;
@@ -90,10 +90,7 @@ function applyDeepUpdates(state, updates) {
 }
 
 
-
-
-
-
+// Declarative map tying action names to concrete UI transitions or side effects.
 export const actionHandlers = {
     changeColor: (props) => {
         console.log(`Changing color: ${props.color}`)
@@ -127,7 +124,7 @@ export const actionHandlers = {
         console.log("ЖУРНАЛ ХОДОВ clicked");
         console.log(props.actions)
 
-        //HARDCODED instead of real server response
+        // Use fixtures so the journal view can render without calling the live backend.
         const history = journal;
         const entryPointKey = findEntryPoint(history);
         console.log("HISTORY entry", entryPointKey);
@@ -145,6 +142,7 @@ export const actionHandlers = {
                 action: 'Clicked'
             };
 
+            // Proxy player actions to the remote engine, expecting a diff can merge locally.
             const response = await fetch('http://188.120.246.243:3000/submit', {
                 method: 'POST',
                 headers: {
@@ -180,6 +178,7 @@ export const actionHandlers = {
 };
 
 
+// Lightweight dispatcher invoked by components, shielding them from handler lookup details.
 export const manageActions = (actionData, id, actionHandlers, updateAppState, appState) => {
     if (!actionData || !actionData.proc) return;
 
@@ -189,4 +188,3 @@ export const manageActions = (actionData, id, actionHandlers, updateAppState, ap
         actionHandler(actionData.props || id, updateAppState, appState);
     }
 };
-

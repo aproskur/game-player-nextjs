@@ -197,6 +197,43 @@ body {
   flex-grow: 1;
 }
 
+.default-journal-variable-component {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-align: center;
+}
+
+.default-journal-variable-component .journal-variable__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.default-journal-variable-component .journal-variable__value {
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.default-journal-variable-component .journal-variable__diff {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.default-journal-variable-component .journal-variable__diff sup {
+  line-height: 1;
+}
+
+.default-journal-variable-component .journal-variable__caption {
+  margin-top: 0.5rem;
+}
+
+
 .heading-h1 {
   color: #fff;
   font-weight: bold;

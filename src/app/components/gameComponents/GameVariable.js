@@ -1,9 +1,10 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useContext, useCallback } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { manageActions, actionHandlers } from '../../utils/actions';
+import { GameScreenContext } from '../GameScreenRenderer';
 
-// guard so we never produce url(undefined)
+// guard so never produce url(undefined)
 const safeBg = (p) =>
   p && typeof p === 'string'
     ? (p.startsWith('url(') ? p : `url(${p})`)
@@ -32,6 +33,7 @@ const GameVariable = React.memo(function GameVariable({
 }) {
   const [showDescription, setShowDescription] = useState(false);
   const controls = useAnimation();
+  const { updateAppState, appState } = useContext(GameScreenContext); // keep local access to shared game state
 
   useEffect(() => {
     console.log(`Animating with value: ${value}`);
@@ -41,24 +43,26 @@ const GameVariable = React.memo(function GameVariable({
     });
   }, [value, controls]);
 
-  const handleClick = () => {
+  // Stable callback so memoized children don't rerender while still seeing fresh context data
+  const handleClick = useCallback(() => {
     if (actions.onClick) {
-      manageActions(actions.onClick, id, actionHandlers);
+      manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
     }
-  };
+  }, [actions, id, updateAppState, appState]);
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = useCallback(() => {
     console.log(`Mouse enter on variable ${id}`);
     if (actions.onHover) {
-      manageActions(actions.onHover, id, actionHandlers);
+      manageActions(actions.onHover, id, actionHandlers, updateAppState, appState);
     }
     setShowDescription(true);
-  };
+  }, [actions, id, updateAppState, appState]);
 
-  const handleMouseLeave = () => {
+  // Only the identifier is logged, so changing `id` is the sole reason to recreate this handler
+  const handleMouseLeave = useCallback(() => {
     console.log(`Mouse leave on variable ${id}`);
     setShowDescription(false);
-  };
+  }, [id]);
 
   const btnStyle = useMemo(() => {
     // start from old inline CSS, then let new style override it

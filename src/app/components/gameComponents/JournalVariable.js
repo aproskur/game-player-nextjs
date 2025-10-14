@@ -1,57 +1,38 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 
-const JournalVariable = ({ cssClass, previousValue, value, caption, children, ...props }) => {
-    const difference = value - previousValue;
-    const sign = difference > 0 ? '+' : '';
+const JournalVariable = ({
+  cssClass = '',
+  value = 0,
+  previousValue = 0,
+  caption,
+  cssInline,
+  style,
+  children,
+  ...rest
+}) => {
+  const safeValue = Number(value ?? 0);
+  const safePrev = Number(previousValue ?? 0);
+  const diff = Number.isFinite(safeValue - safePrev) ? safeValue - safePrev : null;
 
-    console.log('Journal Variable rendered');
+  const mergedStyle = useMemo(
+    () => ({ ...(cssInline || {}), ...(style || {}) }),
+    [cssInline, style],
+  );
 
-    // Define inline styles. TODO Find another solution
-    const wrapperStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-
-    };
-
-    const valueStyle = {
-        fontWeight: 'bold',
-        fontSize: '2rem'
-
-    };
-
-    const differenceStyle = {
-        fontWeight: 'bold',
-        fontSize: '1.5rem'
-
-    };
-
-    const mainWrapperStyle = {
-        marginTop: "1em",
-        display: 'flex',
-        flexDirection: 'column',
-        color: '#fff',
-        justifyContent: "center",
-        alignItems: "center"
-    }
-
-
-    return (
-
-        <div style={mainWrapperStyle}>
-            <div style={wrapperStyle}>
-                <div style={valueStyle}>{value}</div>
-                {difference !== 0 && (
-                    <div style={differenceStyle}>
-                        <sup>{sign}{difference}</sup>
-                    </div>
-                )}
-            </div>
-            <div className={`default-journal-variable-component ${cssClass}`}>{caption}</div>
-        </div>
-    );
+  return (
+    <div className={`default-journal-variable-component ${cssClass}`} style={mergedStyle} {...rest}>
+      <div className="journal-variable__row">
+        <div className="journal-variable__value">{safeValue}</div>
+        {diff ? (
+          <div className="journal-variable__diff">
+            <sup>{diff > 0 ? '+' : ''}{diff}</sup>
+          </div>
+        ) : null}
+      </div>
+      <div className="journal-variable__caption">{caption}</div>
+      {children}
+    </div>
+  );
 };
 
 export default memo(JournalVariable);
-
-
