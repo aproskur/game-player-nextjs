@@ -19,15 +19,15 @@ const shallowEqual = (a, b) => {
 };
 
 const GameCard = ({ id, actions = {}, cssClass, text, backgroundImage, style, cssInline, children, ...rest }) => {
-  const { updateAppState, appState } = useContext(GameScreenContext);
+  const { dispatchAppState, appState } = useContext(GameScreenContext);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = useCallback(() => {
     if (!actions.onClick) return;
     console.log('CARD handleClick. Passing to actions manager', appState);
-    manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
+    manageActions(actions.onClick, id, actionHandlers, dispatchAppState, appState);
     setIsFlipped((v) => !v);
-  }, [actions, id, appState, updateAppState]);
+  }, [actions, id, appState, dispatchAppState]);
 
   const mergedStyle = useMemo(() => {
     const s = { ...(cssInline || {}), ...(style || {}) };

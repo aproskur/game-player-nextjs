@@ -33,7 +33,7 @@ const GameVariable = React.memo(function GameVariable({
 }) {
   const [showDescription, setShowDescription] = useState(false);
   const controls = useAnimation();
-  const { updateAppState, appState } = useContext(GameScreenContext); // keep local access to shared game state
+  const { dispatchAppState, appState } = useContext(GameScreenContext); // keep local access to shared game state
 
   useEffect(() => {
     console.log(`Animating with value: ${value}`);
@@ -46,17 +46,17 @@ const GameVariable = React.memo(function GameVariable({
   // Stable callback so memoized children don't rerender while still seeing fresh context data
   const handleClick = useCallback(() => {
     if (actions.onClick) {
-      manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
+      manageActions(actions.onClick, id, actionHandlers, dispatchAppState, appState);
     }
-  }, [actions, id, updateAppState, appState]);
+  }, [actions, id, dispatchAppState, appState]);
 
   const handleMouseEnter = useCallback(() => {
     console.log(`Mouse enter on variable ${id}`);
     if (actions.onHover) {
-      manageActions(actions.onHover, id, actionHandlers, updateAppState, appState);
+      manageActions(actions.onHover, id, actionHandlers, dispatchAppState, appState);
     }
     setShowDescription(true);
-  }, [actions, id, updateAppState, appState]);
+  }, [actions, id, dispatchAppState, appState]);
 
   // Only the identifier is logged, so changing `id` is the sole reason to recreate this handler
   const handleMouseLeave = useCallback(() => {

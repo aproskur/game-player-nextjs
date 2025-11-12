@@ -20,14 +20,14 @@ const GameButton = ({
   children,
   ...rest
 }) => {
-  const { updateAppState, appState } = useContext(GameScreenContext);
+  const { dispatchAppState, appState } = useContext(GameScreenContext);
   const clickable = Boolean(actions.onClick);
 
   const handleClick = useCallback(() => {
     if (!clickable) return;
     console.log('BUTTON handleClick. Passing to actions manager', appState);
-    manageActions(actions.onClick, id, actionHandlers, updateAppState, appState);
-  }, [clickable, actions, id, appState, updateAppState]);
+    manageActions(actions.onClick, id, actionHandlers, dispatchAppState, appState);
+  }, [clickable, actions, id, appState, dispatchAppState]);
 
   const mergedStyle = useMemo(() => {
     const s = { ...(cssInline || {}), ...(style || {}) };

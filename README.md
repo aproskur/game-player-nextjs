@@ -6,7 +6,7 @@ This app renders Cubica game screens from JSON blueprints. Rather than hard-codi
 - `src/app/page.js` mounts `GameScreenRenderer`, a client component that hydrates the game state and exposes it via `GameScreenContext`.
 - `GameScreenRenderer` chooses between local fixtures (`src/app/utils/localDataLoader.js`) and the remote API (`src/app/utils/serverDataLoader.js`) and stores the parsed schema in `appState`.
 - `src/app/utils/renderer.js` walks the schema, mapping each `component` id to a React component under `src/app/components/gameComponents`. Old (`cssInline`) and new (`css`) styling props are merged so both schema generations render.
-- Player interactions trigger JSON-defined actions that are dispatched through `src/app/utils/actions.js`. Handlers can swap screens, fetch server deltas, or mutate state via `applyDeepUpdates`.
+- Player interactions trigger JSON-defined actions that are dispatched through `src/app/utils/actions.js`. Handlers can swap screens, fetch server deltas, or dispatch reducer actions that feed `applyStateUpdates`.
 
 ### Data Sources
 - **Local development**: `localDevelopment=true` loads `screen_s1.json` so you can work offline. Additional fixtures live under `src/app/data/`.
@@ -30,7 +30,7 @@ Toggle local fixtures vs. server fetches by passing `localDevelopment` to `GameS
 ### Testing
 There are currently no automated tests. Recommended next steps include:
 - Renderer smoke tests that load each fixture and snapshot the output tree.
-- Action handler tests for `applyDeepUpdates` and state transitions.
+- Action handler tests for `applyStateUpdates` and reducer transitions.
 - Integration tests covering server diffs and context updates.
 
 ### Roadmap Notes

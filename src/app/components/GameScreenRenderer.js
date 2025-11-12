@@ -1,6 +1,8 @@
 'use client';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useReducer, useCallback } from 'react';
 import renderComponent from '../utils/renderer';
+import { appStateActionTypes } from '../utils/stateActions';
+import { applyStateUpdates } from '../utils/applyStateUpdates';
 
 /**
  * Provides the current game screen state and updater to the component tree.
@@ -15,40 +17,61 @@ export const GameScreenContext = createContext();
  * @param {boolean} [props.localDevelopment=false] - Switches data loading between local fixtures and the server.
  * @returns {JSX.Element}
  */
+const initialReducerState = {
+    status: 'idle',
+    appState: null,
+    error: null,
+};
+
+const appStateReducer = (state, action) => {
+    switch (action.type) {
+        case appStateActionTypes.LOAD_START:
+            return { ...state, status: 'loading', error: null };
+        case appStateActionTypes.LOAD_SUCCESS:
+            return { status: 'ready', appState: action.payload ?? null, error: null };
+        case appStateActionTypes.LOAD_FAILURE:
+            return { status: 'error', appState: null, error: action.payload ?? 'Failed to load data' };
+        case appStateActionTypes.REPLACE_STATE:
+            return { ...state, appState: action.payload ?? null };
+        case appStateActionTypes.APPLY_PATCH:
+            if (!state.appState || !action.payload) {
+                return state;
+            }
+            return {
+                ...state,
+                appState: applyStateUpdates(state.appState, action.payload),
+            };
+        default:
+            return state;
+    }
+};
+
 const GameScreenRenderer = ({ children, localDevelopment = false }) => {
-    const [{ appState, loading, error }, setState] = useState({
-        appState: null,
-        loading: true,
-        error: null,
-    });
+    const [{ appState, status, error }, dispatch] = useReducer(appStateReducer, initialReducerState);
 
     useEffect(() => {
-        console.log("Starting to load data");
         let cancelled = false;
         const loadData = async () => {
+            dispatch({ type: appStateActionTypes.LOAD_START });
             try {
-                setState((prev) => {
-                    if (cancelled) {
-                        return prev;
-                    }
-                    return { ...prev, loading: true, error: null };
-                });
-                let appState;
+                let nextState;
                 if (localDevelopment) {
                     const { loadLocalData } = await import('../utils/localDataLoader');
-                    appState = loadLocalData();
+                    nextState = loadLocalData();
                 } else {
                     const { fetchServerData } = await import('../utils/serverDataLoader');
-                    appState = await fetchServerData();
+                    nextState = await fetchServerData();
                 }
                 if (!cancelled) {
-                    setState({ appState, loading: false, error: null });
+                    dispatch({ type: appStateActionTypes.LOAD_SUCCESS, payload: nextState });
                 }
-            } catch (error) {
+            } catch (err) {
                 if (!cancelled) {
-                    setState({ appState: null, loading: false, error: 'Failed to load data' });
+                    dispatch({
+                        type: appStateActionTypes.LOAD_FAILURE,
+                        payload: err?.message ?? 'Failed to load data',
+                    });
                 }
-            } finally {
             }
         };
 
@@ -60,14 +83,13 @@ const GameScreenRenderer = ({ children, localDevelopment = false }) => {
 
 
     /**
-     * Replaces the current app state with the provided value.
-     * @param {unknown} newState - Fully updated application state tree.
+     * Exposes reducer dispatch so nested components can trigger state transitions.
      */
-    const updateAppState = (newState) => {
-        setState((prev) => ({ ...prev, appState: newState }));
-    };
+    const dispatchAppState = useCallback((action) => {
+        dispatch(action);
+    }, [dispatch]);
 
-    if (loading) {
+    if (status === 'loading') {
         return <div>Loading...</div>;
     }
 
@@ -79,7 +101,7 @@ const GameScreenRenderer = ({ children, localDevelopment = false }) => {
     const renderedComponent = appState && entryPointKey ? renderComponent(appState[entryPointKey]) : null;
 
     return (
-        <GameScreenContext.Provider value={{ appState, updateAppState }}>
+        <GameScreenContext.Provider value={{ appState, dispatchAppState }}>
             <div>
                 {renderedComponent}
                 {children}
@@ -92,6 +114,6 @@ export default GameScreenRenderer;
 
 /**
  * Convenience hook for consumers that need the game screen context.
- * @returns {{ appState: any, updateAppState: (newState: unknown) => void }}
+ * @returns {{ appState: any, dispatchAppState: React.Dispatch }}
  */
 export const useGameScreenState = () => useContext(GameScreenContext);
