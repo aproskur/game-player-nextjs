@@ -2,6 +2,7 @@
     "application": {
         "class": "journal",
         "component": "here?",
+        "description": "this is a journal screen",
         "cssFile": "to load main css. suggestion: rename field as cssFile instead of css (suggestions for other css - cssClass, cssInline)",
         "elements": {
             "JOURNAL": {

@@ -2,6 +2,7 @@
   "application": {
     "class": "application",
     "component": "here?",
+    "description": "This is the screen with leftsidebar layout",
     "cssFile": "main.css",
     "elements": {
       "S1": {

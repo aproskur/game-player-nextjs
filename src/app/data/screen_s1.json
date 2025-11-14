@@ -2,6 +2,7 @@
     "application": {
         "class": "application",
         "component": "here?",
+        "description": "this is the screen with top sidebar layout",
         "cssFile": "to load main css. suggestion: rename field as cssFile instead of css (suggestions for other css - cssClass, cssInline)",
         "elements": {
             "S1": {

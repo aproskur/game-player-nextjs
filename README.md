@@ -25,7 +25,10 @@ npm run dev
 # visit http://localhost:3000
 ```
 
-Toggle local fixtures vs. server fetches by passing `localDevelopment` to `GameScreenRenderer` (see `src/app/page.js`).
+Toggle fixtures vs. live data without code edits:
+- Set `NEXT_PUBLIC_USE_LOCAL_DATA=true|false` in `.env.local` for a default.
+- Override per-request with `?local=true` or `?local=false` on the URL (alias: `localData`).
+`src/app/page.js` reads those values and forwards them to `GameScreenRenderer` as `localDevelopment`.
 
 ### Testing
 There are currently no automated tests. Recommended next steps include:

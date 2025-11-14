@@ -1,10 +1,14 @@
+// Primary keys used to match nodes when merging arrays of objects.
 const indexKeys = ['id', 'key', 'name'];
 
+// Safer object detection than `typeof`.
 const isPlainObject = (value) =>
   Object.prototype.toString.call(value) === '[object Object]';
 
+// Only plain objects and arrays are ever merged recursively.
 const isMergeable = (value) => Array.isArray(value) || isPlainObject(value);
 
+// Looks for a key shared by the node and the pending updates.
 const getMatchingKey = (candidate, remainingKeys) => {
   if (!candidate || typeof candidate !== 'object') {
     return null;
@@ -18,6 +22,7 @@ const getMatchingKey = (candidate, remainingKeys) => {
   return null;
 };
 
+// Prefer a semantic key when possible so array items merge predictably.
 const getArrayItemKey = (item, fallback) => {
   if (item && typeof item === 'object') {
     for (const keyName of indexKeys) {
@@ -30,6 +35,7 @@ const getArrayItemKey = (item, fallback) => {
   return fallback;
 };
 
+// Merge arrays by aligning items via their derived keys.
 const mergeArrays = (target = [], patch = []) => {
   if (!Array.isArray(target)) {
     return Array.isArray(patch) ? [...patch] : patch;
@@ -57,6 +63,7 @@ const mergeArrays = (target = [], patch = []) => {
   return next;
 };
 
+// Copy-on-write object merge that only clones when something actually changes.
 const mergeObjects = (target = {}, patch = {}) => {
   const base = isPlainObject(target) ? target : {};
   let next = base;
@@ -76,6 +83,7 @@ const mergeObjects = (target = {}, patch = {}) => {
   return mutated ? next : base === target ? target : base;
 };
 
+// Delegates to the right merge strategy for the node type.
 const mergeNodes = (target, patch) => {
   if (patch === undefined) {
     return target;
@@ -92,6 +100,7 @@ const mergeNodes = (target, patch) => {
   return patch;
 };
 
+// Walk the tree, merging nodes that match keys in `updates`.
 export const applyStateUpdates = (tree, updates = {}) => {
   if (!tree || !isPlainObject(updates)) {
     return tree;
@@ -103,6 +112,7 @@ export const applyStateUpdates = (tree, updates = {}) => {
   }
 
   const walk = (node) => {
+    // Recursively propagate updates until the matching node or array item is found.
     if (!isMergeable(node)) {
       return node;
     }
@@ -167,6 +177,7 @@ export const applyStateUpdates = (tree, updates = {}) => {
   let nextTree = walk(tree);
 
   if (remainingKeys.size) {
+    // Attach updates that never found a match in the existing tree.
     nextTree = nextTree && nextTree !== tree ? { ...nextTree } : { ...(tree || {}) };
     remainingKeys.forEach((key) => {
       nextTree[key] = updates[key];
@@ -175,4 +186,3 @@ export const applyStateUpdates = (tree, updates = {}) => {
 
   return nextTree;
 };
-

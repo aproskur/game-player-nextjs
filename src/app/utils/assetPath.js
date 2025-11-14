@@ -1,4 +1,4 @@
-// src/app/utils/assetPath.js
+// src/app/utils/assetPath.js CURENTLY NOT USED>dead code
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 export function normalizeAssetUrl(p) {

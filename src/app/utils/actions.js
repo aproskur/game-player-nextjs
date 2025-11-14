@@ -20,6 +20,10 @@ export const actionTypes = {
 
 
 // Declarative map tying action names to concrete UI transitions or side effects.
+// Schema nodes pass interaction metadata through props.actions.<event>, producing objects shaped like:
+// { proc: actionTypes.showHistory, props: { description: '...', color: '#fff' } }.
+// Handlers that swap entire screens fire REPLACE_STATE with a fixture payload, while server-driven flows
+// call APPLY_PATCH so applyStateUpdates can merge incremental diffs into the existing tree.
 export const actionHandlers = {
     changeColor: (props) => {
         console.log(`Changing color: ${props.color}`)
@@ -110,6 +114,9 @@ export const actionHandlers = {
 
 
 // Lightweight dispatcher invoked by components, shielding them from handler lookup details.
+// Components hand over the action descriptor emitted by the schema: { proc: actionTypes.foo, props: {...} }.
+// manageActions resolves `proc` to a handler, forwards the optional props (or element id) plus
+// dispatchAppState and the current appState so handlers can swap entire fixtures or apply patches.
 export const manageActions = (actionData, id, actionHandlers, dispatchAppState, appState) => {
     if (!actionData || !actionData.proc) return;
 
